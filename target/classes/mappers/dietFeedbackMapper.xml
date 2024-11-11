@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eatory.model.dao.DietFeedbackDao">
+
+    <!-- recordId로 피드백 조회 -->
+    <select id="findByRecordId" resultType="DietFeedback" parameterType="long">
+        SELECT feedback_id AS feedbackId, record_id AS recordId, feedback_text AS feedbackText, suggestions
+        FROM DietFeedback
+        WHERE record_id = #{recordId};
+    </select>
+
+    <!-- 새로운 피드백 추가 -->
+    <insert id="insert" parameterType="DietFeedback" keyProperty="feedbackId" useGeneratedKeys="true">
+        INSERT INTO DietFeedback (record_id, feedback_text, suggestions)
+        VALUES (#{recordId}, #{feedbackText}, #{suggestions});
+    </insert>
+
+    <!-- 피드백 수정 -->
+    <update id="update" parameterType="DietFeedback">
+        UPDATE DietFeedback
+        SET feedback_text = #{feedbackText}, suggestions = #{suggestions}
+        WHERE feedback_id = #{feedbackId};
+    </update>
+
+    <!-- 피드백 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM DietFeedback
+        WHERE feedback_id = #{feedbackId};
+    </delete>
+
+</mapper>
