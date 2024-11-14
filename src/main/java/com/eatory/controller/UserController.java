@@ -1,13 +1,17 @@
 package com.eatory.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.eatory.jwt.JwtUtil;
 
 import com.eatory.model.dto.User;
 import com.eatory.model.service.UserService;
@@ -17,12 +21,15 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api-user")
+@CrossOrigin("*")
 public class UserController {
 	
 	private final UserService userService;
+	private final JwtUtil jwtUtil;
 	
-	public UserController(UserService userService) {
+	public UserController(UserService userService, JwtUtil jwtUtil) {
 		this.userService = userService;
+		this.jwtUtil = jwtUtil;
 	}
 	
 	//회원 목록 불러오기
@@ -38,23 +45,31 @@ public class UserController {
 	//사용자 회원가입
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@RequestBody User user) {
-		boolean isRegistered = userService.registerUser(user);
+		boolean isRegistered = userService.signup(user);
 		if(isRegistered) {
-			return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+			return ResponseEntity.status(HttpStatus.CREATED).body("유저가 성공적으로 등록됨! 회원가입 완료!");
 		} 
 		
-		return new ResponseEntity<>("User registered failed", HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("유저 회원가입 실패!");
 	}
 	
 	//사용자 로그인
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody User loginRequest, HttpSession session){
-		User user = userService.login(loginRequest.getUserId(), loginRequest.getPassword());
-		if(user != null) {
-			session.setAttribute("user", user); //세션에 사용자 정보 저장
-			return new ResponseEntity<String>("Login Successful", HttpStatus.OK);
-		}
-		return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
+	public ResponseEntity<Map<String, Object>> login(@RequestBody User loginRequest){
+		HttpStatus status = null;
+		Map<String, Object> result = new HashMap<>();
+		User loginUser = userService.login(loginRequest.getUserId(), loginRequest.getPassword());
+		
+		if(loginUser != null) {
+			result.put("message", "login 성공");
+			result.put("access-token", jwtUtil.createToken(loginUser.getUsername()));
+			result.put("id", loginUser.getUserId());
+			
+			status = HttpStatus.ACCEPTED;
+		} else {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		} 
+		return new ResponseEntity<>(result, status);
 	}
 	
 	

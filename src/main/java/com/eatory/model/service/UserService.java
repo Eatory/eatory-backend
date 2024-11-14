@@ -13,10 +13,12 @@ public interface UserService {
 	public List<User> getUserList();
 	
 	//사용자 등록하기 
-	public boolean registerUser(User user);
+	public boolean signup(User user);
 	
 	//로그인 하기 
 	public User login(Long userId, String password);
+
+
 	
 
 }

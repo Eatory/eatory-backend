@@ -6,9 +6,8 @@
 	
 	<!-- 회원목록 가져오기 -->
 	<select id="selectAll" resultType="User">
-		SELECT u.id id, u.password password, u.name name, c.name curriculumName 
-		FROM users u, curriculum c
-		WHERE u.curriculum_code = c.code 
+		SELECT *
+		FROM users
 	</select>
 	
 	<!-- 회원가입(회원등록) -->

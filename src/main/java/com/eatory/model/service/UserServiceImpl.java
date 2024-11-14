@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional
 	//사용자 등록하기 (회원가입)
-	public boolean registerUser(User user) {
+	public boolean signup(User user) {
 		try {
 			userDao.insertOne(user);
 			return true;
@@ -48,7 +48,8 @@ public class UserServiceImpl implements UserService{
 	public User login(Long userId, String password) {
 		return userDao.selectOne(userId, password);
 	}
-	
+
+
 	
 	
 	
