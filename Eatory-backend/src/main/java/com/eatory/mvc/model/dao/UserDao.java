@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.eatory.mvc.model.dto.User;
+import com.eatory.mvc.model.dto.UserProfile;
 
 public interface UserDao {
 
@@ -14,5 +15,7 @@ public interface UserDao {
 	public void insertOne(User user);
 
 	User selectOne(@Param("email") String email, @Param("password") String password);
+
+	public UserProfile findeUserProfile(Long userId);
 
 }

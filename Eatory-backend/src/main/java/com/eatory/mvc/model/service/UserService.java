@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.eatory.mvc.model.dto.User;
+import com.eatory.mvc.model.dto.UserProfile;
 
 
 public interface UserService {
@@ -17,6 +18,8 @@ public interface UserService {
 	
 	//로그인 하기 
 	public User login(String email, String password);
+
+	public UserProfile getUserProfile(Long userId);
 
 
 	

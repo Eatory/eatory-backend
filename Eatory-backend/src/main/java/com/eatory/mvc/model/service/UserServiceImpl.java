@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eatory.mvc.model.dao.UserDao;
 import com.eatory.mvc.model.dto.User;
+import com.eatory.mvc.model.dto.UserProfile;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -47,6 +48,12 @@ public class UserServiceImpl implements UserService{
 	//로그인 하기 
 	public User login(String email, String password) {
 		return userDao.selectOne(email, password);
+	}
+
+	@Override
+	@Transactional
+	public UserProfile getUserProfile(Long userId) {
+		return userDao.findeUserProfile(userId);
 	}
 
 

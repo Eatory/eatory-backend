@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatory.mvc.jwt.JwtUtil;
 import com.eatory.mvc.model.dto.LoginRequest;
 import com.eatory.mvc.model.dto.User;
+import com.eatory.mvc.model.dto.UserProfile;
 import com.eatory.mvc.model.service.UserService;
 
 //import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -34,6 +36,16 @@ public class UserController {
 	public UserController(UserService userService, JwtUtil jwtUtil) {
 		this.userService = userService;
 		this.jwtUtil = jwtUtil;
+	}
+	
+	//프로필 정보 조회 (회원 불러오기)
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserProfile> getUserProfile(@PathVariable Long userId){
+		UserProfile userProfile = userService.getUserProfile(userId);
+		if( userProfile == null ) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(userProfile, HttpStatus.OK);
 	}
 	
 	//회원 목록 불러오기
@@ -57,7 +69,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("유저 회원가입 실패!");
 	}
 	
-	//사용자 로그인
+	//사용자 로그인 json {"email":"222@gmail.com", "password":"pass1"}
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest){
 		HttpStatus status = null;
@@ -67,7 +79,6 @@ public class UserController {
 		if(loginUser != null) {
 			result.put("message", "login 성공");
 			result.put("access-token", jwtUtil.createToken(loginUser.getUsername()));
-//			result.put("user", loginUser);
 			result.put("user", Map.of("email", loginUser.getEmail(), "name", loginUser.getUsername())); // 데이터 구조 명확히 반환
 			status = HttpStatus.ACCEPTED;
 
