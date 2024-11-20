@@ -28,6 +28,10 @@ public class JwtUtil {
 
     // Refresh Token 유효 기간 (7일)
     private final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
+    
+    public long getRefreshTokenExpireTime() {
+    	return REFRESH_TOKEN_EXPIRE_TIME;
+    }
 	
     @PostConstruct
     public void init() {

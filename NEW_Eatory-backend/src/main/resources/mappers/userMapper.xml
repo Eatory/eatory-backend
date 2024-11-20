@@ -43,8 +43,8 @@
 	
 	<!-- 로그인 (사용자 조회) -->
     <select id="findUserByEmailAndPassword" parameterType="map" resultType="User">
-        SELECT id, email, username, password
-        FROM users
+        SELECT user_id, email, username, password
+        FROM user
         WHERE email = #{email} AND password = #{password}
     </select>
 
