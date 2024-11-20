@@ -112,6 +112,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 
+	@Override
+	@Transactional
+	public boolean logoutUser(String email) {
+		try {
+			userDao.deleteRefreshTokenByEmail(email);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+
 	
 	
 	
