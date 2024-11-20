@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eatory.mvc.model.dao.AllergyDao">
+
+    <!-- 알러지 정보 조회 -->
+    <select id="selectAllergies" resultType="Allergy">
+        SELECT allergy_id, allergy_name FROM Allergy;
+    </select>
+
+    <!-- 사용자 알러지 추가 -->
+    <insert id="insertUserAllergy">
+        INSERT INTO UserAllergy (user_id, allergy_id)
+        VALUES (#{userId}, #{allergyId});
+    </insert>
+
+    <!-- 사용자 알러지 삭제 -->
+    <delete id="deleteUserAllergy">
+        DELETE FROM UserAllergy
+        WHERE user_id = #{userId} AND allergy_id = #{allergyId};
+    </delete>
+</mapper>

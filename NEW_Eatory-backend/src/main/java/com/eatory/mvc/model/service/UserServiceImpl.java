@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService{
 	@Transactional
 	//회원 프로필 정보 가져오기 
 	public UserProfile getUserProfile(Long userId) {
-		return userDao.findeUserProfile(userId);
+		return userDao.findUserProfile(userId);
 	}
 
 
