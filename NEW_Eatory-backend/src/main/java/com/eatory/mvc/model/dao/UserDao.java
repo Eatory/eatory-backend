@@ -1,5 +1,6 @@
 package com.eatory.mvc.model.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public interface UserDao {
 
 	public User findUserByEmailAndPassword(String email, String password);
 
-	public void saveRefreshToken(String email, String refreshToken);
-
 	public String getRefreshTokenByEmail(String email);
+
+	public void saveRefreshToken(String email, String refreshToken, Date expiresAt);
 
 }

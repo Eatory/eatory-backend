@@ -1,5 +1,6 @@
 package com.eatory.mvc.model.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,9 +77,10 @@ public class UserServiceImpl implements UserService{
 			//AccessToken 및 Refresh Token 생성 
 			String accessToken = jwtUtil.createAccessToken(email);
 			String refreshToken = jwtUtil.createRefreshToken(email);
+			Date expiresAt = new Date(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpireTime());
 			
 			//Refresh Token 저장
-			userDao.saveRefreshToken(email, refreshToken);
+			userDao.saveRefreshToken(email, refreshToken, expiresAt);
 			
 			//응답 데이터 구성 
 			response.put("message", "Login 성공");
