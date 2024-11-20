@@ -3,10 +3,12 @@ package com.eatory.mvc.model.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.eatory.mvc.model.dao.AllergyDao;
 import com.eatory.mvc.model.dto.Allergy;
 
+@Service
 public class AllergyServiceImpl implements AllergyService{
 	
 	private final AllergyDao allergydao;
