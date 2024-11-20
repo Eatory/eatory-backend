@@ -83,7 +83,13 @@ public class UserController {
 	
 	//로그아웃 API
 	@PostMapping("/logout")
-	public ResponseEntity<String> logout(@RequestParam String email) {
+	public ResponseEntity<String> logout(@RequestBody Map<String, String> body) {
+		
+		String email = body.get("email");
+		if (email == null || email.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+	    }
+		
 		try {
 			// Refresh Token 삭제
 			boolean isDeleted = userService.logoutUser(email);
