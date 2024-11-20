@@ -31,11 +31,9 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 	
 	private final UserService userService;
-	private final JwtUtil jwtUtil;
 	
-	public UserController(UserService userService, JwtUtil jwtUtil) {
+	public UserController(UserService userService) {
 		this.userService = userService;
-		this.jwtUtil = jwtUtil;
 	}
 	
 	//프로필 정보 조회 (회원 불러오기)
@@ -72,21 +70,30 @@ public class UserController {
 	//사용자 로그인 json {"email":"222@gmail.com", "password":"pass1"}
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest){
-		HttpStatus status = null;
-		Map<String, Object> result = new HashMap<>();
-		User loginUser = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+		//Service 에서 로그인 처리 및 토큰 생성 
+		Map<String, Object> response = userService.loginUser(loginRequest);
 		
-		if(loginUser != null) {
-			result.put("message", "login 성공");
-			result.put("access-token", jwtUtil.createToken(loginUser.getUsername()));
-			result.put("user", Map.of("email", loginUser.getEmail(), "name", loginUser.getUsername())); // 데이터 구조 명확히 반환
-			status = HttpStatus.ACCEPTED;
-
+		if(response.containsKey("access-token")) {
+			return ResponseEntity.ok(response);
 		} else {
-			result.put("message", "login 실패");
-			status = HttpStatus.UNAUTHORIZED;
-		} 
-		return new ResponseEntity<>(result, status);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> request){
+		//Service에서 Refresh Token 검증 및 새로운 Access Token 발급 
+		String email = request.get("email");
+		String refreshToken = request.get("refreshToken");
+		
+		String newAccessToken = userService.refreshAccessToken(email, refreshToken);
+		if(newAccessToken != null) {
+			return ResponseEntity.ok(Map.of("access-token", newAccessToken));
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "유효하지 않거나 만료된 Refresh Token 입니다."));
+		}
+		
 	}
 	
 	

@@ -18,4 +18,10 @@ public interface UserDao {
 
 	public UserProfile findeUserProfile(Long userId);
 
+	public User findUserByEmailAndPassword(String email, String password);
+
+	public void saveRefreshToken(String email, String refreshToken);
+
+	public String getRefreshTokenByEmail(String email);
+
 }
