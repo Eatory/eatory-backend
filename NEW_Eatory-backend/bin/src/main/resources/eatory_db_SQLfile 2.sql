@@ -5,8 +5,6 @@ CREATE DATABASE eatory_db DEFAULT CHARACTER SET utf8mb4;
 
 USE eatory_db;
 
-# User 기능  
-
 CREATE TABLE `User` (
     `user_id` BIGINT NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(255) NOT NULL,
@@ -115,30 +113,6 @@ VALUES
 (8, 9, '2023-11-17 10:00:00'), -- user8 follows user9
 (9, 10, '2023-11-18 11:00:00'), -- user9 follows user10
 (10, 1, '2023-11-19 12:00:00'); -- user10 follows user1
-
-
-# User - 로그인(token - refresh token)
-
-CREATE TABLE refresh_tokens (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL, -- 사용자 이메일
-    refresh_token VARCHAR(500) NOT NULL UNIQUE, -- Refresh Token 값
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 토큰 생성 시간
-    expires_at TIMESTAMP, -- 토큰 만료 시간
-    UNIQUE(email)
-);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

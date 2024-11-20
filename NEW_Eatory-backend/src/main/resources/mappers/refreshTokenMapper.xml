@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eatory.mvc.model.dao.RefreshTokenDao">
+
+	<!-- Refresh Token 저장 -->
+    <insert id="saveRefreshToken">
+        INSERT INTO refresh_tokens (email, refresh_token, expires_at)
+        VALUES (#{email}, #{refreshToken}, #{expiresAt})
+        ON DUPLICATE KEY UPDATE
+            refresh_token = #{refreshToken},
+            expires_at = #{expiresAt};
+    </insert>
+
+    <!-- Refresh Token 조회 -->
+    <select id="getRefreshTokenByEmail" resultType="String">
+        SELECT refresh_token
+        FROM refresh_tokens
+        WHERE email = #{email};
+    </select>
+
+    <!-- Refresh Token 삭제 -->
+    <delete id="deleteRefreshTokenByEmail">
+        DELETE FROM refresh_tokens
+        WHERE email = #{email};
+    </delete>
+    
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eatory.mvc.model.dao.CalendarDao">
+
+    <!-- 특정 사용자 ID의 모든 일정 조회 -->
+    <select id="findByUserId" resultType="Calendar" parameterType="long">
+        SELECT calendar_id AS calendarId, user_id AS userId, date, diet_score AS dietScore, notes
+        FROM Calendar
+        WHERE user_id = #{userId};
+    </select>
+    
+    <!-- 특정 사용자 ID와 날짜로 일정 조회 -->
+    <select id="findByUserIdAndDate" resultType="Calendar" parameterType="map">
+        SELECT calendar_id AS calendarId, user_id AS userId, date, diet_score AS dietScore, notes
+        FROM Calendar
+        WHERE user_id = #{userId} AND date = #{date};
+    </select>
+
+    <!-- 새로운 일정 추가 -->
+    <insert id="insert" parameterType="Calendar" keyProperty="calendarId" useGeneratedKeys="true">
+        INSERT INTO Calendar (user_id, date, diet_score, notes)
+        VALUES (#{userId}, #{date}, #{dietScore}, #{notes});
+    </insert>
+
+    <!-- 일정 수정 -->
+    <update id="update" parameterType="Calendar">
+        UPDATE Calendar
+        SET user_id = #{userId}, date = #{date}, diet_score = #{dietScore}, notes = #{notes}
+        WHERE calendar_id = #{calendarId};
+    </update>
+
+    <!-- 일정 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM Calendar
+        WHERE calendar_id = #{calendarId};
+    </delete>
+    
+</mapper>
