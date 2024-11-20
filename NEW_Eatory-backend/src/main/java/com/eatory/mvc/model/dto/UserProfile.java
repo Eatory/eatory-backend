@@ -1,5 +1,7 @@
 package com.eatory.mvc.model.dto;
 
+import java.util.List;
+
 public class UserProfile {
 	private String username;
 	private String profileImage;
@@ -8,7 +10,7 @@ public class UserProfile {
 	private String allergyName;
 	private int postCount;
 	private int followerCount;
-	private int followingCount;
+	private int followeeCount;
 	public String getUsername() {
 		return username;
 	}
@@ -51,11 +53,19 @@ public class UserProfile {
 	public void setFollowerCount(int followerCount) {
 		this.followerCount = followerCount;
 	}
-	public int getFollowingCount() {
-		return followingCount;
+	public int getFolloweeCount() {
+		return followeeCount;
 	}
-	public void setFollowingCount(int followingCount) {
-		this.followingCount = followingCount;
+	public void setFolloweeCount(int followingCount) {
+		this.followeeCount = followeeCount;
+	}
+	public Object getAllergies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public void setAllergies(List<String> allergies) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

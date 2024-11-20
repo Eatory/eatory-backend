@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eatory.mvc.jwt.JwtUtil;
+import com.eatory.mvc.model.dao.AllergyDao;
 import com.eatory.mvc.model.dao.UserDao;
 import com.eatory.mvc.model.dto.LoginRequest;
 import com.eatory.mvc.model.dto.User;
@@ -19,10 +20,12 @@ import com.eatory.mvc.model.dto.UserProfile;
 public class UserServiceImpl implements UserService{
 	
 	private final UserDao userDao;
+	private final AllergyDao allergyDao;
 	private final JwtUtil jwtUtil;
 
-	public UserServiceImpl(UserDao userDao, JwtUtil jwtUtil) {
+	public UserServiceImpl(UserDao userDao, AllergyDao allergyDao ,JwtUtil jwtUtil) {
 		this.userDao = userDao;
+		this.allergyDao = allergyDao;
 		this.jwtUtil = jwtUtil;
 	}
 	
@@ -59,7 +62,14 @@ public class UserServiceImpl implements UserService{
 	@Transactional
 	//회원 프로필 정보 가져오기 
 	public UserProfile getUserProfile(Long userId) {
-		return userDao.findUserProfile(userId);
+		//사용자 기본 프로필 정보 가져오기 
+		UserProfile userProfile = userDao.findUserProfile(userId);
+		
+		//사용자 알러지 리스트 가져오기 
+		List<String> allergies = allergyDao.getAllergiesByUserId(userId);
+		userProfile.setAllergies(allergies);
+		
+		return userProfile;
 	}
 
 
@@ -71,8 +81,8 @@ public class UserServiceImpl implements UserService{
 		String email = loginRequest.getEmail();
 		String password = loginRequest.getPassword();
 		
-		//사용자 인증 
-		User user = userDao.findUserByEmailAndPassword(email, password);
+		//사용자 인증
+		User user = userDao.findUserByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
 		if(user != null) {
 			//AccessToken 및 Refresh Token 생성 
 			String accessToken = jwtUtil.createAccessToken(email);
@@ -82,11 +92,25 @@ public class UserServiceImpl implements UserService{
 			//Refresh Token 저장
 			userDao.saveRefreshToken(email, refreshToken, expiresAt);
 			
+			//사용자 프로필 추가 데이터 조회
+			UserProfile userProfile = userDao.findUserProfile(user.getUserId());
+			
 			//응답 데이터 구성 
 			response.put("message", "Login 성공");
 			response.put("access-token", accessToken);
 			response.put("refresh-token", refreshToken);
-			response.put("user", Map.of("email", user.getEmail(), "name", user.getUsername()));
+			 response.put("user", Map.of(
+			            "id", user.getUserId(),
+			            "name", user.getUsername(),
+			            "email", user.getEmail(),
+			            "profileImage", userProfile.getProfileImage(),
+			            "postCount", userProfile.getPostCount(),
+			            "followerCount", userProfile.getFollowerCount(),
+			            "followeeCount", userProfile.getFolloweeCount(),
+			            "allergies", userProfile.getAllergies(), // 알러지 리스트
+			            "height", userProfile.getHeight(),
+			            "weight", userProfile.getWeight()
+			        )); // 사용자 데이터 추가
 			
 		} else {
 			response.put("message", "Login 실패");
