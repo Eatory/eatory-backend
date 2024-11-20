@@ -7,14 +7,14 @@
 	<!-- eatory가 관리하는 전체 알러지 리스트 조회 -->
 	<select id="selectAllergies" resultType="string">
 		SELECT allergy_name
-		FROM allergies;
+		FROM Allergy;
 	</select>
 
      <!-- 사용자 ID로 알러지 리스트 조회 -->
     <select id="getAllergiesByUserId" parameterType="long" resultType="string">
         SELECT a.allergy_name
         FROM UserAllergy ua
-        JOIN Allergies a ON ua.allergy_id = a.allergy_id
+        JOIN Allergy a ON ua.allergy_id = a.allergy_id
         WHERE ua.user_id = #{userId};
     </select>
 
@@ -22,7 +22,7 @@
     <insert id="insertUserAllergy">
         INSERT INTO UserAllergy (user_id, allergy_id)
         SELECT #{userId}, a.allergy_id
-        FROM Allergies a
+        FROM Allergy a
         WHERE a.allergy_name = #{allergyName};
     </insert>
 
@@ -30,6 +30,6 @@
     <delete id="deleteUserAllergy">
         DELETE FROM UserAllergy
         WHERE user_id = #{userId}
-        AND allergy_id = (SELECT allergy_id FROM Allergies WHERE allergy_name = #{allergyName});
+        AND allergy_id = (SELECT allergy_id FROM Allergy WHERE allergy_name = #{allergyName});
     </delete>
 </mapper>

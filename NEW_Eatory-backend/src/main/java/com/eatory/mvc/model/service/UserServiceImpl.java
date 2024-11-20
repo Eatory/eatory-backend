@@ -103,11 +103,11 @@ public class UserServiceImpl implements UserService{
 			            "id", user.getUserId(),
 			            "name", user.getUsername(),
 			            "email", user.getEmail(),
-			            "profileImage", userProfile.getProfileImage(),
+			            "profileImage", userProfile.getProfileImage() != null ? userProfile.getProfileImage() : "",
 			            "postCount", userProfile.getPostCount(),
 			            "followerCount", userProfile.getFollowerCount(),
 			            "followeeCount", userProfile.getFolloweeCount(),
-			            "allergies", userProfile.getAllergies(), // 알러지 리스트
+			            "allergies", userProfile.getAllergies() != null ? userProfile.getAllergies() : List.of(), // 알러지 리스트
 			            "height", userProfile.getHeight(),
 			            "weight", userProfile.getWeight()
 			        )); // 사용자 데이터 추가
