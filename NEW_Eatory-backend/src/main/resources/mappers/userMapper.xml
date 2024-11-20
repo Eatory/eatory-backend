@@ -6,78 +6,70 @@
 
 
 	<!-- 회원 프로필 조회 -->
-	<select id="findUserProfile" parameterType="long"
-		resultType="UserProfile">
-		SELECT
-		u.username AS username,
-		u.profile_image AS profileImage,
-		u.height AS height,
-		u.weight AS weight,
-		a.allergy_name AS allergyName,
-		(SELECT COUNT(*) FROM Post p WHERE p.user_id = #{userId}) AS postCount,
-		(SELECT COUNT(*) FROM Follow f WHERE f.followee_id = #{userId}) AS
-		followerCount,
-		(SELECT COUNT(*) FROM Follow f WHERE f.follower_id = #{userId}) AS
-		followeeCount
-		FROM User u
-		LEFT JOIN UserAllergy ua ON ua.user_id =
-		u.user_id
-		WHERE u.user_id = #{userId}
-	</select>
+    <select id="findUserProfile" parameterType="long"
+        resultType="UserProfile">
+        SELECT
+            u.username AS username,
+            u.profile_image AS profileImage,
+            u.height AS height,
+            u.weight AS weight,
+            a.allergy_name AS allergyName,
+            (SELECT COUNT(*) FROM Post p WHERE p.user_id = #{userId}) AS postCount,
+            (SELECT COUNT(*) FROM Follow f WHERE f.followee_id = #{userId}) AS followerCount,
+            (SELECT COUNT(*) FROM Follow f WHERE f.follower_id = #{userId}) AS followeeCount
+        FROM `User` u
+        LEFT JOIN UserAllergy ua ON ua.user_id = u.user_id
+        LEFT JOIN Allergy a ON ua.allergy_id = a.allergy_id
+        WHERE u.user_id = #{userId};
+    </select>
 
-	<!-- 회원목록 가져오기 -->
-	<select id="selectAll" resultType="User">
-		SELECT *
-		FROM user
-	</select>
+    <!-- 회원 목록 가져오기 -->
+    <select id="selectAll" resultType="User">
+        SELECT *
+        FROM `User`;
+    </select>
 
-	<!-- 회원가입(회원등록) -->
-	<insert id="insertUser" parameterType="User"
-		useGeneratedKeys="true" keyProperty="userId">
-		INSERT INTO user
-		(username, password, email, height, weight, gender, birth_date,
-		profile_image, phone_number)
-		VALUES (#{username},
-		#{password},#{email},#{height},#{weight},#{gender},#{birth_date},#{profile_image},#{phone_number})
-	</insert>
+    <!-- 회원가입(회원등록) -->
+    <insert id="insertUser" parameterType="User"
+        useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO `User`
+            (username, password, email, height, weight, gender, birth_date,
+             profile_image, phone_number)
+        VALUES
+            (#{username}, #{password}, #{email}, #{height}, #{weight},
+             #{gender}, #{birthDate}, #{profileImage}, #{phoneNumber});
+    </insert>
 
+    <!-- 로그인 (사용자 조회) -->
+    <select id="findUserByEmailAndPassword" parameterType="map"
+        resultType="User">
+        SELECT user_id, email, username, password
+        FROM `User`
+        WHERE email = #{email} AND password = #{password};
+    </select>
 
-	<!-- 로그인 (Refresh Token 적용 전) <select id="selectOne" parameterType="Map" 
-		resultType="User"> SELECT email, username FROM user WHERE email = #{email} 
-		AND password = #{password} </select> -->
+    <!-- Refresh Token 저장 -->
+    <insert id="saveRefreshToken">
+        INSERT INTO refresh_tokens (user_email, token_value, expires_at)
+        VALUES (#{email}, #{refreshToken}, #{expiresAt})
+        ON DUPLICATE KEY UPDATE
+            token_value = #{refreshToken},
+            expires_at = #{expiresAt};
+    </insert>
 
-	<!-- 로그인 (사용자 조회) -->
-	<select id="findUserByEmailAndPassword" parameterType="map"
-		resultType="User">
-		SELECT user_id, email, username, password
-		FROM user
-		WHERE email = #{email} AND password = #{password}
-	</select>
+    <!-- Refresh Token 조회 -->
+    <select id="getRefreshTokenByEmail" parameterType="string"
+        resultType="string">
+        SELECT token_value
+        FROM refresh_tokens
+        WHERE user_email = #{email};
+    </select>
 
-
-
-	<!-- Refresh Token 저장 -->
-	<insert id="saveRefreshToken">
-		INSERT INTO refresh_tokens (user_email, token_value, expires_at)
-		VALUES (#{email}, #{refreshToken}, #{expiresAt})
-		ON DUPLICATE KEY UPDATE
-		token_value = #{refreshToken},
-		expires_at = #{expiresAt};
-	</insert>
-
-	<!-- Refresh Token 조회 -->
-	<select id="getRefreshTokenByEmail" parameterType="string"
-		resultType="string">
-		SELECT token_value
-		FROM refresh_tokens
-		WHERE user_email = #{email};
-	</select>
-
-	<!-- Refresh Token 삭제 (로그아웃)-->
-	<delete id="deleteRefreshTokenByEmail" parameterType="string">
-		DELETE FROM refresh_tokens
-		WHERE user_email = #{email};
-	</delete>
+    <!-- Refresh Token 삭제 (로그아웃) -->
+    <delete id="deleteRefreshTokenByEmail" parameterType="string">
+        DELETE FROM refresh_tokens
+        WHERE user_email = #{email};
+    </delete>
 
 
 </mapper>
