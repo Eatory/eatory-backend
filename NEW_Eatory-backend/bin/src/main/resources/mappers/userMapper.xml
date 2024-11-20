@@ -35,11 +35,36 @@
 	</insert>
 	
 	
-	<!-- 로그인 -->
+	<!-- 로그인 (Refresh Token 적용 전)
 	<select id="selectOne" parameterType="Map" resultType="User">
 		SELECT email, username
 		FROM user
 		WHERE email = #{email} AND password = #{password}
-	</select>
+	</select> -->
+	
+	<!-- 로그인 (사용자 조회) -->
+    <select id="findUserByEmailAndPassword" parameterType="map" resultType="User">
+        SELECT id, email, username, password
+        FROM users
+        WHERE email = #{email} AND password = #{password}
+    </select>
+
+    <!-- Refresh Token 저장 -->
+    <insert id="saveRefreshToken">
+        INSERT INTO refresh_tokens (email, refresh_token, created_at, expires_at)
+        VALUES (#{email}, #{refreshToken}, NOW(), NOW() + INTERVAL 7 DAY)
+        ON DUPLICATE KEY UPDATE
+            refresh_token = #{refreshToken},
+            created_at = NOW(),
+            expires_at = NOW() + INTERVAL 7 DAY;
+    </insert>
+
+    <!-- Refresh Token 조회 -->
+    <select id="getRefreshTokenByEmail" parameterType="string" resultType="string">
+        SELECT refresh_token
+        FROM refresh_tokens
+        WHERE email = #{email};
+    </select>
+	
 	
 </mapper>

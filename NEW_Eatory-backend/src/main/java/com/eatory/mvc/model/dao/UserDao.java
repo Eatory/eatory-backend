@@ -16,7 +16,7 @@ public interface UserDao {
 
 	User selectOne(@Param("email") String email, @Param("password") String password);
 
-	public UserProfile findeUserProfile(Long userId);
+	public UserProfile findUserProfile(Long userId);
 
 	public User findUserByEmailAndPassword(String email, String password);
 
