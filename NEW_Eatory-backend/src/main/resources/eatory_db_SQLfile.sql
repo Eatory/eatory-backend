@@ -120,13 +120,14 @@ VALUES
 # User - 로그인(token - refresh token)
 
 CREATE TABLE refresh_tokens (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL, -- 사용자 이메일
-    refresh_token VARCHAR(500) NOT NULL UNIQUE, -- Refresh Token 값
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 토큰 생성 시간
+    refresh_token_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- Refresh Token의 고유 ID
+    user_email VARCHAR(255) NOT NULL, -- 사용자 이메일
+    token_value VARCHAR(500) NOT NULL UNIQUE, -- Refresh Token 값
+    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 토큰 발급 시간
     expires_at TIMESTAMP, -- 토큰 만료 시간
-    UNIQUE(email)
+    UNIQUE(user_email) -- 동일 이메일에 대한 중복 방지
 );
+
 
 
 
