@@ -1,11 +1,13 @@
 package com.eatory.mvc.jwt;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -13,11 +15,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
-	private String key = "SSAFY_NonMajor_JavaTrack_SecretKey";
-	private SecretKey secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
+	@Value("${jwt.secret}")
+	private String key;
+	private Key secretKey;
 	
 	  // Access Token 유효 기간 (1시간)
     private final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
@@ -25,6 +29,10 @@ public class JwtUtil {
     // Refresh Token 유효 기간 (7일)
     private final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 	
+    @PostConstruct
+    public void init() {
+        this.secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
+    }
 	
 	
     /**
@@ -78,8 +86,8 @@ public class JwtUtil {
      */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .setAllowedClockSkewSeconds(1)
+                .setSigningKey(secretKey)
+                .setAllowedClockSkewSeconds(60) //서버와 클라 간 시간 차이 허용 시간 증가 
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
