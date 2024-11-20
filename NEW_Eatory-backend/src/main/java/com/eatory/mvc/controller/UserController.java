@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatory.mvc.jwt.JwtUtil;
@@ -79,6 +80,25 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 		}
 	}
+	
+	//로그아웃 API
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout(@RequestParam String email) {
+		try {
+			// Refresh Token 삭제
+			boolean isDeleted = userService.logoutUser(email);
+			
+			if(isDeleted) {
+				return ResponseEntity.status(HttpStatus.OK).body("Logout 성공!");
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout 실패!");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃 중 에러가 발생했습니다.");
+		}
+	}
+	
+	
 	
 	@PostMapping("/refresh")
 	public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> request){

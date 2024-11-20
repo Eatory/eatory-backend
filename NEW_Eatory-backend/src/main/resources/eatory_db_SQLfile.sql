@@ -125,6 +125,10 @@ CREATE TABLE refresh_tokens (
     token_value VARCHAR(500) NOT NULL UNIQUE, -- Refresh Token 값
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 토큰 발급 시간
     expires_at TIMESTAMP, -- 토큰 만료 시간
+    CONSTRAINT `fk_refresh_user_email`
+        FOREIGN KEY (`user_email`)
+        REFERENCES `users` (`email`)
+        ON DELETE CASCADE, -- 사용자가 삭제되면 Refresh Token도 삭제
     UNIQUE(user_email) -- 동일 이메일에 대한 중복 방지
 );
 

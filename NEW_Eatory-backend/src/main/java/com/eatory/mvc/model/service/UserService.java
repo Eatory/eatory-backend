@@ -30,6 +30,8 @@ public interface UserService {
 	//Refresh 토큰 검증 및 새로운 Access Token 발급 
 	public String refreshAccessToken(String email, String refreshToken);
 
+	public boolean logoutUser(String email);
+
 
 	
 

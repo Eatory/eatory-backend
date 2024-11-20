@@ -25,4 +25,6 @@ public interface UserDao {
 
 	public void saveRefreshToken(String email, String refreshToken, Date expiresAt);
 
+	public void deleteRefreshTokenByEmail(String email);
+
 }
