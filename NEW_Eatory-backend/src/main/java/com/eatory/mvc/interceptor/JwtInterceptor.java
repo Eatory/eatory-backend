@@ -27,22 +27,34 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // Authorization 헤더에서 토큰 추출
         String token = request.getHeader(HEADER_AUTH);
-
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // "Bearer " 제거
-            try {
-                jwtUtil.validate(token); // 토큰 검증
-                return true; // 검증 성공 시 요청 처리 허용
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-                response.getWriter().write("Unauthorized: Invalid token");
-                return false; // 요청 차단
-            }
+        
+        if(token == null || !token.startsWith("Bearer")) {
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        	response.getWriter().write("Unauthorized: Missing or invalid token");
+        	return false;
         }
-
-        // 토큰이 없거나 유효하지 않은 경우
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-        response.getWriter().write("Unauthorized: Missing or invalid token");
-        return false;
+        
+        //"Bearer" 제거
+        token = token.substring(7);
+        
+        try {
+        	//토큰 검증 
+        	String email = jwtUtil.extractEmail(token); //이메일 추출
+        	if(!jwtUtil.validateToken(token, email)) {
+        		throw new RuntimeException("Token validation failed");
+        	}
+        	
+        	//필요한 데이터를 요청 속성에 저장 
+        	request.setAttribute("email", email);
+        	
+        	return true;
+        } catch (Exception e) {
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        	response.getWriter().write("Unauthorized" + e.getMessage());
+        	return false;
+        	
+        }
+      
+        
     }
 }
