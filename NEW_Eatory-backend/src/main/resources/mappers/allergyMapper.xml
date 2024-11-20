@@ -4,20 +4,32 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eatory.mvc.model.dao.AllergyDao">
 
-    <!-- 알러지 정보 조회 -->
-    <select id="selectAllergies" resultType="Allergy">
-        SELECT allergy_id, allergy_name FROM Allergy;
+	<!-- eatory가 관리하는 전체 알러지 리스트 조회 -->
+	<select id="selectAllergies" resultType="string">
+		SELECT allergy_name
+		FROM allergies;
+	</select>
+
+     <!-- 사용자 ID로 알러지 리스트 조회 -->
+    <select id="getAllergiesByUserId" parameterType="long" resultType="string">
+        SELECT a.allergy_name
+        FROM UserAllergy ua
+        JOIN Allergies a ON ua.allergy_id = a.allergy_id
+        WHERE ua.user_id = #{userId};
     </select>
 
     <!-- 사용자 알러지 추가 -->
     <insert id="insertUserAllergy">
         INSERT INTO UserAllergy (user_id, allergy_id)
-        VALUES (#{userId}, #{allergyId});
+        SELECT #{userId}, a.allergy_id
+        FROM Allergies a
+        WHERE a.allergy_name = #{allergyName};
     </insert>
 
     <!-- 사용자 알러지 삭제 -->
     <delete id="deleteUserAllergy">
         DELETE FROM UserAllergy
-        WHERE user_id = #{userId} AND allergy_id = #{allergyId};
+        WHERE user_id = #{userId}
+        AND allergy_id = (SELECT allergy_id FROM Allergies WHERE allergy_name = #{allergyName});
     </delete>
 </mapper>
