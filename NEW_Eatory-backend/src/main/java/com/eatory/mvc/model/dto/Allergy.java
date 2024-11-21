@@ -3,6 +3,7 @@ package com.eatory.mvc.model.dto;
 public class Allergy {
 	private Long allergyId;
 	private String allergyName;
+	
 	public Long getAllergyId() {
 		return allergyId;
 	}

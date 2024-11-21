@@ -57,20 +57,14 @@ public class UserServiceImpl implements UserService{
 	public User login(String email, String password) {
 		return userDao.selectOne(email, password);
 	}
-
-	@Override
-	@Transactional
-	//회원 프로필 정보 가져오기 
-	public UserProfile getUserProfile(Long userId) {
-		//사용자 기본 프로필 정보 가져오기 
-		UserProfile userProfile = userDao.findUserProfile(userId);
-		
-		//사용자 알러지 리스트 가져오기 
-		List<String> allergies = allergyDao.getAllergiesByUserId(userId);
-		userProfile.setAllergies(allergies);
-		
-		return userProfile;
-	}
+	
+	 @Override
+	    public UserProfile getUserProfile(Long userId) {
+	        if (userId == null) {
+	            throw new IllegalArgumentException("User ID cannot be null");
+	        }
+	        return userDao.findUserProfile(userId);
+	    }
 
 
 	@Override
@@ -82,7 +76,7 @@ public class UserServiceImpl implements UserService{
 		String password = loginRequest.getPassword();
 		
 		//사용자 인증
-		User user = userDao.findUserByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
+		User user = userDao.findUserByEmailAndPassword(email, password);
 		if(user != null) {
 			//AccessToken 및 Refresh Token 생성 
 			String accessToken = jwtUtil.createAccessToken(email);
@@ -92,22 +86,33 @@ public class UserServiceImpl implements UserService{
 			//Refresh Token 저장
 			userDao.saveRefreshToken(email, refreshToken, expiresAt);
 			
-			//사용자 프로필 추가 데이터 조회
-			UserProfile userProfile = userDao.findUserProfile(user.getUserId());
+			// 사용자 프로필 추가 데이터 조회
+	        UserProfile userProfile = userDao.findUserProfile(user.getUserId());
+	        if (userProfile == null) {
+	            userProfile = new UserProfile(); // null 안전 처리
+	            userProfile.setUsername(user.getUsername());
+	            userProfile.setProfileImage("");
+	            userProfile.setPostCount(0);
+	            userProfile.setFollowerCount(0);
+	            userProfile.setFolloweeCount(0);
+	            userProfile.setAllergies(List.of());
+	            userProfile.setHeight(0);
+	            userProfile.setWeight(0);
+	        }
 			
 			//응답 데이터 구성 
 			response.put("message", "Login 성공");
 			response.put("access-token", accessToken);
 			response.put("refresh-token", refreshToken);
-			 response.put("user", Map.of(
+			response.put("user", Map.of(
 			            "id", user.getUserId(),
 			            "name", user.getUsername(),
 			            "email", user.getEmail(),
-			            "profileImage", userProfile.getProfileImage() != null ? userProfile.getProfileImage() : "",
+			            "profileImage", userProfile.getProfileImage(),
 			            "postCount", userProfile.getPostCount(),
 			            "followerCount", userProfile.getFollowerCount(),
 			            "followeeCount", userProfile.getFolloweeCount(),
-			            "allergies", userProfile.getAllergies() != null ? userProfile.getAllergies() : List.of(), // 알러지 리스트
+			            "allergies", userProfile.getAllergies(),
 			            "height", userProfile.getHeight(),
 			            "weight", userProfile.getWeight()
 			        )); // 사용자 데이터 추가

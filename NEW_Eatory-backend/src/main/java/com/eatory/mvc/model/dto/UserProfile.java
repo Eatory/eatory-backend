@@ -1,16 +1,17 @@
 package com.eatory.mvc.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfile {
 	private String username;
 	private String profileImage;
-	private int height;
-	private int weight;
-	private String allergyName;
 	private int postCount;
 	private int followerCount;
 	private int followeeCount;
+	private List<String> allergies = new ArrayList<>();
+	private int height;
+	private int weight;
 	public String getUsername() {
 		return username;
 	}
@@ -22,24 +23,6 @@ public class UserProfile {
 	}
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
-	}
-	public int getHeight() {
-		return height;
-	}
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	public int getWeight() {
-		return weight;
-	}
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-	public String getAllergyName() {
-		return allergyName;
-	}
-	public void setAllergyName(String allergyName) {
-		this.allergyName = allergyName;
 	}
 	public int getPostCount() {
 		return postCount;
@@ -56,16 +39,26 @@ public class UserProfile {
 	public int getFolloweeCount() {
 		return followeeCount;
 	}
-	public void setFolloweeCount(int followingCount) {
+	public void setFolloweeCount(int followeeCount) {
 		this.followeeCount = followeeCount;
 	}
-	public Object getAllergies() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getAllergies() {
+		return allergies;
 	}
 	public void setAllergies(List<String> allergies) {
-		// TODO Auto-generated method stub
-		
+		this.allergies = allergies;
+	}
+	public int getHeight() {
+		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	public int getWeight() {
+		return weight;
+	}
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 	
 	
