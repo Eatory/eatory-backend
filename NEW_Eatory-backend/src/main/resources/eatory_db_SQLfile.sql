@@ -21,17 +21,17 @@ CREATE TABLE `User` (
     PRIMARY KEY (`user_id`)
 );
 
+CREATE TABLE Allergy (
+    allergy_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    allergy_name VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE `UserAllergy` (
     `user_id` BIGINT NOT NULL,
     `allergy_id` BIGINT NOT NULL,
     PRIMARY KEY (`user_id`, `allergy_id`),
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`),
     FOREIGN KEY (`allergy_id`) REFERENCES `Allergy`(`allergy_id`)
-);
-
-CREATE TABLE Allergy (
-    allergy_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    allergy_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Post (
@@ -127,7 +127,7 @@ CREATE TABLE refresh_tokens (
     expires_at TIMESTAMP, -- 토큰 만료 시간
     CONSTRAINT `fk_refresh_user_email`
         FOREIGN KEY (`user_email`)
-        REFERENCES `users` (`email`)
+        REFERENCES `user` (`email`)
         ON DELETE CASCADE, -- 사용자가 삭제되면 Refresh Token도 삭제
     UNIQUE(user_email) -- 동일 이메일에 대한 중복 방지
 );
