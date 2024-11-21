@@ -16,8 +16,9 @@ public interface UserDao {
 	public void insertOne(User user);
 
 	User selectOne(@Param("email") String email, @Param("password") String password);
-
-	public UserProfile findUserProfile(Long userId);
+	
+	//프로필 정보 가져오기
+	public UserProfile findUserProfile(@Param("userId") Long userId);
 
 	public User findUserByEmailAndPassword(String email, String password);
 
