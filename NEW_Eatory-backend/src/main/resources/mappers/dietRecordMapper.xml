@@ -4,46 +4,64 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eatory.mvc.model.dao.DietRecordDao">
 
+    <!-- User ID로 기록 조회 -->
     <select id="findByUserId" parameterType="long" resultType="DietRecord">
         SELECT 
-            record_id AS recordId,
-            user_id AS userId,
-            record_date AS recordDate,
-            meal_type AS mealType,
-            notes,
-            menus
-        FROM DietRecord
+            record_id, 
+            user_id, 
+            record_date, 
+            meal_type, 
+            menus, 
+            notes
+        FROM DietRecord 
         WHERE user_id = #{userId};
     </select>
 
+    <!-- Record ID로 특정 기록 조회 -->
     <select id="findById" parameterType="long" resultType="DietRecord">
         SELECT 
-            record_id AS recordId,
-            user_id AS userId,
-            record_date AS recordDate,
-            meal_type AS mealType,
-            notes,
-            menus
-        FROM DietRecord
+            record_id, 
+            user_id, 
+            record_date, 
+            meal_type, 
+            menus, 
+            notes
+        FROM DietRecord 
         WHERE record_id = #{recordId};
     </select>
 
+    <!-- 기록 데이터 삽입 -->
     <insert id="insert" parameterType="DietRecord" keyProperty="recordId" useGeneratedKeys="true">
-        INSERT INTO DietRecord (user_id, record_date, meal_type, notes, menus)
-        VALUES (#{userId}, #{recordDate}, #{mealType}, #{notes}, CAST(#{menus} AS JSON));
+        INSERT INTO DietRecord (
+            user_id, 
+            record_date, 
+            meal_type, 
+            menus, 
+            notes
+        ) VALUES (
+            #{userId}, 
+            #{recordDate}, 
+            #{mealType}, 
+            #{menus, typeHandler=com.eatory.mvc.handler.ListToJsonTypeHandler}, 
+            #{notes}
+        );
     </insert>
 
+    <!-- 기록 데이터 업데이트 -->
     <update id="update" parameterType="DietRecord">
         UPDATE DietRecord
         SET 
-            record_date = #{recordDate},
-            meal_type = #{mealType},
-            notes = #{notes},
-            menus = CAST(#{menus} AS JSON)
+            user_id = #{userId}, 
+            record_date = #{recordDate}, 
+            meal_type = #{mealType}, 
+            menus = #{menus, typeHandler=com.eatory.mvc.handler.ListToJsonTypeHandler}, 
+            notes = #{notes}
         WHERE record_id = #{recordId};
     </update>
 
+    <!-- 기록 데이터 삭제 -->
     <delete id="delete" parameterType="long">
         DELETE FROM DietRecord WHERE record_id = #{recordId};
     </delete>
+
 </mapper>
