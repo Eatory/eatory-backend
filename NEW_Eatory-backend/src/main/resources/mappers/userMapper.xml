@@ -25,7 +25,7 @@
 	</select>
 	
 	<resultMap id="UserProfileResultMap" type="com.eatory.mvc.model.dto.UserProfile">
-    	<result property="id" column="id" />
+    	<result property="userId" column="userId" />
 	    <result property="username" column="username" />
 	    <result property="profileImage" column="profileImage" />
 	    <result property="height" column="height" />
