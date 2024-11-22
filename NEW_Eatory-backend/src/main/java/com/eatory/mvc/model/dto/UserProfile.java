@@ -12,6 +12,7 @@ public class UserProfile {
 	private List<String> allergies = new ArrayList<>();
 	private int height;
 	private int weight;
+	private String email;
 	public String getUsername() {
 		return username;
 	}
@@ -59,6 +60,9 @@ public class UserProfile {
 	}
 	public void setWeight(int weight) {
 		this.weight = weight;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	
