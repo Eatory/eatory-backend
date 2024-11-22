@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService{
 			response.put("refresh-token", refreshToken);
 			response.put("user", Map.of(
 			            "id", user.getUserId(),
-			            "name", user.getUsername(),
+			            "username", user.getUsername(),
 			            "email", user.getEmail(),
 			            "profileImage", userProfile.getProfileImage(),
 			            "postCount", userProfile.getPostCount(),
