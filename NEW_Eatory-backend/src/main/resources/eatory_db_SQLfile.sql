@@ -132,7 +132,30 @@ CREATE TABLE refresh_tokens (
     UNIQUE(user_email) -- 동일 이메일에 대한 중복 방지
 );
 
+# DietRecord 테이블 생성
+CREATE TABLE DietRecord (
+    record_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL, -- User와 연결
+    record_date DATE NOT NULL, -- 기록 날짜
+    meal_type ENUM('아침', '점심', '저녁', '간식') NOT NULL, -- 식사 종류
+    menus JSON NOT NULL, -- 식사 메뉴 (JSON 형식)
+    notes VARCHAR(500), -- 간단한 메모
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE -- User 삭제 시 기록도 삭제
+);
 
+# DietRecord 더미 데이터 삽입
+INSERT INTO DietRecord (user_id, record_date, meal_type, menus, notes)
+VALUES
+(1, '2023-11-20', '아침', '["토스트", "커피"]', '상쾌한 아침!'),
+(1, '2023-11-20', '점심', '["샐러드", "치킨"]', '건강한 점심'),
+(1, '2023-11-20', '저녁', '["스테이크", "와인"]', '특별한 저녁'),
+(2, '2023-11-21', '아침', '["요거트", "바나나"]', '바쁜 아침'),
+(2, '2023-11-21', '점심', '["파스타", "콜라"]', '맛있는 점심'),
+(3, '2023-11-22', '저녁', '["피자", "맥주"]', '친구들과 저녁'),
+(4, '2023-11-23', '간식', '["초콜릿", "우유"]', '달콤한 간식'),
+(5, '2023-11-24', '점심', '["볶음밥", "김치"]', '한식 점심'),
+(6, '2023-11-25', '아침', '["팬케이크", "주스"]', '느긋한 주말 아침'),
+(7, '2023-11-26', '저녁', '["탕수육", "짜장면"]', '중국 요리 저녁');
 
 
 
