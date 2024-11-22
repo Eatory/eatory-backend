@@ -9,8 +9,8 @@
 		SELECT 
 			u.user_id AS id,
 			u.username AS username,
-			u.profile_image AS profileImage,
 			u.email AS email,
+			u.profile_image AS profileImage,
 			u.height AS height,
 			u.weight AS weight,
 			(SELECT COUNT(*) FROM Post p WHERE p.user_id = #{userId}) AS postCount,
@@ -28,8 +28,8 @@
 	<resultMap id="UserProfileResultMap" type="com.eatory.mvc.model.dto.UserProfile">
     	<result property="userId" column="userId" />
 	    <result property="username" column="username" />
-	    <result property="profileImage" column="profileImage" />
 	    <result property="email" column="email" />
+	    <result property="profileImage" column="profileImage" />
 	    <result property="height" column="height" />
 	    <result property="weight" column="weight" />
 	    <result property="postCount" column="postCount" />
