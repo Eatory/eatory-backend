@@ -7,6 +7,7 @@
 	<select id="findUserProfile" parameterType="long"
 		resultMap="UserProfileResultMap">
 		SELECT 
+			u.user_id AS id,
 			u.username AS username,
 			u.profile_image AS profileImage,
 			u.height AS height,
@@ -24,6 +25,7 @@
 	</select>
 	
 	<resultMap id="UserProfileResultMap" type="com.eatory.mvc.model.dto.UserProfile">
+    	<result property="id" column="id" />
 	    <result property="username" column="username" />
 	    <result property="profileImage" column="profileImage" />
 	    <result property="height" column="height" />
