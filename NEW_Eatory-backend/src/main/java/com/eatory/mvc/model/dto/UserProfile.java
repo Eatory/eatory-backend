@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfile {
+	private Long id;
 	private String username;
+	private String email;
 	private String profileImage;
 	private int postCount;
 	private int followerCount;
@@ -12,12 +14,23 @@ public class UserProfile {
 	private List<String> allergies = new ArrayList<>();
 	private int height;
 	private int weight;
-	private String email;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getProfileImage() {
 		return profileImage;
@@ -61,9 +74,7 @@ public class UserProfile {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	
 	
 	
 
