@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService{
 	        if (userProfile == null) {
 	            userProfile = new UserProfile(); // null 안전 처리
 	            userProfile.setUsername(user.getUsername());
+	            userProfile.setEmail(user.getEmail());
 	            userProfile.setProfileImage("");
 	            userProfile.setPostCount(0);
 	            userProfile.setFollowerCount(0);

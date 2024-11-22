@@ -19,11 +19,15 @@ import com.eatory.mvc.model.dto.Allergy;
 import com.eatory.mvc.model.dto.User;
 import com.eatory.mvc.model.service.AllergyService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api-allergy")
 @CrossOrigin("*")
+@Tag(name="Allergy API", description="Allergy CRUD API")
+
 public class AllergyController {
 	private final AllergyService allergyService;
 	private final JwtUtil jwtUtil;
@@ -37,6 +41,7 @@ public class AllergyController {
 	
 	// 알러지 정보 조회 
 	@GetMapping
+    @Operation(summary = "알러지 목록 조회", description = "알러지 목록을 조회합니다.")
 	public ResponseEntity<List<Allergy>> getAllAllergies(){
 		List<Allergy> allergies = allergyService.getAllAllergies();
 		if(allergies.isEmpty()) {
