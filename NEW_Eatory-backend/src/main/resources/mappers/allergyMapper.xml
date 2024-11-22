@@ -5,9 +5,9 @@
 <mapper namespace="com.eatory.mvc.model.dao.AllergyDao">
 
 	<!-- eatory가 관리하는 전체 알러지 리스트 조회 -->
-	<select id="selectAllergies" resultType="string">
-		SELECT allergy_name
-		FROM Allergy;
+	<select id="selectAllergies" resultType="com.eatory.mvc.model.dto.Allergy">
+		SELECT allergy_id AS allergyId, allergy_name AS allergyName 
+		FROM Allergy
 	</select>
 
      <!-- 사용자 ID로 알러지 리스트 조회 -->
