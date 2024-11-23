@@ -21,9 +21,7 @@
     <!-- 사용자 알러지 추가 -->
     <insert id="insertUserAllergy">
         INSERT INTO UserAllergy (user_id, allergy_id)
-        SELECT #{userId}, a.allergy_id
-        FROM Allergy a
-        WHERE a.allergy_name = #{allergyName};
+        VALUES (#{userId}, #{allergyId});
     </insert>
 
     <!-- 사용자 알러지 삭제 -->
