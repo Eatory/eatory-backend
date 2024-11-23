@@ -24,12 +24,15 @@ public class AllergyServiceImpl implements AllergyService{
 
     public boolean addUserAllergy(Long userId, Long allergyId) {
         try {
-        	allergydao.insertUserAllergy(userId, allergyId);
+            System.out.println("service: addUserAllergy 호출됨 - userId: " + userId + ", allergyId: " + allergyId);
+            allergydao.insertUserAllergy(userId, allergyId);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("service:알러지 추가 중 오류 발생: " + e.getMessage());
             return false;
         }
-    }
+    }                
 
     public boolean deleteUserAllergy(Long userId, Long allergyId) {
         try {

@@ -25,9 +25,8 @@
     </insert>
 
     <!-- 사용자 알러지 삭제 -->
-    <delete id="deleteUserAllergy">
+    <delete id="deleteUserAllergy" parameterType="map">
         DELETE FROM UserAllergy
-        WHERE user_id = #{userId}
-        AND allergy_id = (SELECT allergy_id FROM Allergy WHERE allergy_name = #{allergyName});
+        WHERE user_id = #{userId} AND allergy_id = #{allergyId};
     </delete>
 </mapper>
