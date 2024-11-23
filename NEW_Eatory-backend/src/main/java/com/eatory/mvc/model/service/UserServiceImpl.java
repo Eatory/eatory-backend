@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
 			UserProfile userProfile = userDao.findUserProfile(user.getUserId());
 			if (userProfile == null) {
 				userProfile = new UserProfile(); // null 안전 처리
+				userProfile.setUserId(user.getUserId());
 				userProfile.setUsername(user.getUsername());
 				userProfile.setEmail(user.getEmail());
 				userProfile.setProfileImage("");
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService {
 			response.put("access-token", accessToken);
 			response.put("refresh-token", refreshToken);
 			response.put("user",
-					Map.of("id", user.getUserId(), 
+					Map.of("userId", user.getUserId(), 
 							"username", user.getUsername(), 
 							"email", user.getEmail(),
 							"profileImage", userProfile.getProfileImage(), 
