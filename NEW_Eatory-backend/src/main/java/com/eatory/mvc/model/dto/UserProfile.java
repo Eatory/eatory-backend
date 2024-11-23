@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfile {
-	private Long id;
+	private Long userId;
 	private String username;
 	private String email;
 	private String profileImage;
@@ -14,11 +14,12 @@ public class UserProfile {
 	private List<String> allergies = new ArrayList<>();
 	private int height;
 	private int weight;
-	public Long getId() {
-		return id;
+	
+	public Long getUserId() {
+		return userId;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	public String getUsername() {
 		return username;
