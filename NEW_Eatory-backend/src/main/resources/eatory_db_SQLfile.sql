@@ -52,18 +52,16 @@ CREATE TABLE Follow (
 );
 
 
-INSERT INTO `User` (username, password, email, height, weight, gender, birth_date, profile_image, phone_number)
-VALUES
-('user1', 'pass1', 'user1@example.com', 170, 65, 'M', '1990-01-01', 'image1.jpg', '010-1234-5678'),
-('user2', 'pass2', 'user2@example.com', 160, 55, 'F', '1992-02-02', 'image2.jpg', '010-2345-6789'),
-('user3', 'pass3', 'user3@example.com', 175, 70, 'M', '1988-03-03', 'image3.jpg', '010-3456-7890'),
-('user4', 'pass4', 'user4@example.com', 165, 50, 'F', '1995-04-04', 'image4.jpg', '010-4567-8901'),
-('user5', 'pass5', 'user5@example.com', 180, 80, 'M', '1985-05-05', 'image5.jpg', '010-5678-9012'),
-('user6', 'pass6', 'user6@example.com', 155, 48, 'F', '1993-06-06', 'image6.jpg', '010-6789-0123'),
-('user7', 'pass7', 'user7@example.com', 172, 68, 'M', '1991-07-07', 'image7.jpg', '010-7890-1234'),
-('user8', 'pass8', 'user8@example.com', 168, 58, 'F', '1994-08-08', 'image8.jpg', '010-8901-2345'),
-('user9', 'pass9', 'user9@example.com', 185, 75, 'M', '1989-09-09', 'image9.jpg', '010-9012-3456'),
-('user10', 'pass10', 'user10@example.com', 162, 52, 'F', '1996-10-10', 'image10.jpg', '010-0123-4567');
+('user1', 'pass1', 'user1@example.com', 170, 65, 'M', '1990-01-01', 'image1.png', '010-1234-5678'),
+('user2', 'pass2', 'user2@example.com', 160, 55, 'F', '1992-02-02', 'image2.png', '010-2345-6789'),
+('user3', 'pass3', 'user3@example.com', 175, 70, 'M', '1988-03-03', 'image3.png', '010-3456-7890'),
+('user4', 'pass4', 'user4@example.com', 165, 50, 'F', '1995-04-04', 'image4.png', '010-4567-8901'),
+('user5', 'pass5', 'user5@example.com', 180, 80, 'M', '1985-05-05', 'image5.png', '010-5678-9012'),
+('user6', 'pass6', 'user6@example.com', 155, 48, 'F', '1993-06-06', 'image6.png', '010-6789-0123'),
+('user7', 'pass7', 'user7@example.com', 172, 68, 'M', '1991-07-07', 'image7.png', '010-7890-1234'),
+('user8', 'pass8', 'user8@example.com', 168, 58, 'F', '1994-08-08', 'image8.png', '010-8901-2345'),
+('user9', 'pass9', 'user9@example.com', 185, 75, 'M', '1989-09-09', 'image9.png', '010-9012-3456'),
+('user10', 'pass10', 'user10@example.com', 162, 52, 'F', '1996-10-10', 'image10.png', '010-0123-4567');
 
 INSERT INTO Allergy (allergy_name)
 VALUES
