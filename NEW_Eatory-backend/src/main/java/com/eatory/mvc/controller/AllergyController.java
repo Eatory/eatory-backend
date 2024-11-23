@@ -1,7 +1,9 @@
 package com.eatory.mvc.controller;
 
 
+import java.io.BufferedReader;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,17 +13,19 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatory.mvc.jwt.JwtUtil;
 import com.eatory.mvc.model.dto.Allergy;
 import com.eatory.mvc.model.dto.User;
+import com.eatory.mvc.model.dto.UserAllergyRequest;
 import com.eatory.mvc.model.service.AllergyService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api-allergy")
@@ -50,19 +54,24 @@ public class AllergyController {
 		return new ResponseEntity<List<Allergy>>(allergies, HttpStatus.OK);
 	}
 	
-	
-	//사용자 알러지 추가 
-	@PostMapping("/user/{userId}")
-	public ResponseEntity<String> addUserAllergy(@PathVariable Long userId, @RequestBody Allergy allergy) {
-		boolean success = allergyService.addUserAllergy(userId, allergy.getAllergyId());
-		if(success) {
-			return ResponseEntity.status(HttpStatus.CREATED).body("사용자 알러지 추가 성공!");
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 알러지 추가 실패!");
-	} 
+	//사용자 알러지 추가
+	@PostMapping("/user-allergy")
+	public ResponseEntity<String> addUserAllergy(@RequestBody UserAllergyRequest request) {
+	    // 요청 데이터 디버깅
+	    System.out.println("RequestBody 내용: " + request);
+
+	    // 서비스 호출
+	    boolean isAdded = allergyService.addUserAllergy(request.getUserId(), request.getAllergyId());
+	    if (isAdded) {
+	        return ResponseEntity.status(HttpStatus.CREATED).body("알러지가 추가되었습니다.");
+	    } else {
+	        return ResponseEntity.badRequest().body("알러지 추가에 실패했습니다.");
+	    }
+	}
+ 
 	
 	//사용자 알러지 삭제
-	@DeleteMapping("/user/{userId}/{allergyId}")
+	@DeleteMapping("/user-allergy/{userId}/{allergyId}")
 	public ResponseEntity<String> deleteUserAllergy(@PathVariable Long userId, @PathVariable Long allergyId) {
 		boolean success = allergyService.deleteUserAllergy(userId, allergyId);
 		if(success) {
