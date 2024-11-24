@@ -18,13 +18,13 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class JwtUtil {
+public class JwtUtil { //jwt 생성, 검증, 검출 기능
 	@Value("${jwt.secret}")
 	private String key;
 	private Key secretKey;
 	
-	  // Access Token 유효 기간 (1시간)
-    private final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
+	  // Access Token 유효 기간 (10시간)
+    private final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 10;
 
     // Refresh Token 유효 기간 (7일)
     private final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
