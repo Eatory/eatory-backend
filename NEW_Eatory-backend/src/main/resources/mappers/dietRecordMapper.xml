@@ -9,7 +9,7 @@
         SELECT 
             record_id, 
             user_id, 
-            record_date, 
+            DATE_FORMAT(record_date, '%Y-%m-%d') AS record_date, 
             meal_type, 
             menus, 
             notes
@@ -22,7 +22,7 @@
         SELECT 
             record_id, 
             user_id, 
-            record_date, 
+            DATE_FORMAT(record_date, '%Y-%m-%d') AS record_date, 
             meal_type, 
             menus, 
             notes
@@ -40,7 +40,7 @@
             notes
         ) VALUES (
             #{userId}, 
-            #{recordDate}, 
+            STR_TO_DATE(#{recordDate}, '%Y-%m-%d'), 
             #{mealType}, 
             #{menus, typeHandler=com.eatory.mvc.handler.ListToJsonTypeHandler}, 
             #{notes}
@@ -52,7 +52,7 @@
         UPDATE DietRecord
         SET 
             user_id = #{userId}, 
-            record_date = #{recordDate}, 
+            record_date = STR_TO_DATE(#{recordDate}, '%Y-%m-%d'), 
             meal_type = #{mealType}, 
             menus = #{menus, typeHandler=com.eatory.mvc.handler.ListToJsonTypeHandler}, 
             notes = #{notes}
