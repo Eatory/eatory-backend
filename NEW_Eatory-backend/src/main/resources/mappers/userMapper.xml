@@ -5,40 +5,43 @@
 <mapper namespace="com.eatory.mvc.model.dao.UserDao">
 
 	<select id="findUserProfile" parameterType="long"
-		resultMap="UserProfileResultMap">
-		SELECT 
-			u.user_id AS userId,
-			u.username AS username,
-			u.email AS email,
-			u.profile_image AS profileImage,
-			u.height AS height,
-			u.weight AS weight,
-			(SELECT COUNT(*) FROM Post p WHERE p.user_id = #{userId}) AS postCount,
-			(SELECT COUNT(*) FROM Follow f WHERE f.followee_id = #{userId}) AS followerCount,
-			(SELECT COUNT(*) FROM Follow f WHERE f.follower_id = #{userId}) AS followeeCount,
-			GROUP_CONCAT(a.allergy_name) AS allergies
-		FROM `User` u
-		LEFT JOIN UserAllergy ua ON ua.user_id = u.user_id
-		LEFT JOIN Allergy a ON ua.allergy_id = a.allergy_id
-		WHERE u.user_id = #{userId}
-		GROUP BY u.user_id;
-		
-	</select>
+        resultMap="UserProfileResultMap">
+    SELECT 
+        u.user_id AS userId,
+        u.username AS username,
+        u.email AS email,
+        u.profile_image AS profileImage,
+        u.height AS height,
+        u.weight AS weight,
+        (SELECT COUNT(*) FROM Post p WHERE p.user_id = #{userId}) AS postCount,
+        (SELECT COUNT(*) FROM Follow f WHERE f.followee_id = #{userId}) AS followerCount,
+        (SELECT COUNT(*) FROM Follow f WHERE f.follower_id = #{userId}) AS followeeCount,
+        a.allergy_id AS allergyId,
+        a.allergy_name AS allergyName
+    FROM `User` u
+    LEFT JOIN UserAllergy ua ON ua.user_id = u.user_id
+    LEFT JOIN Allergy a ON ua.allergy_id = a.allergy_id
+    WHERE u.user_id = #{userId};
+</select>
+
 	
 	<resultMap id="UserProfileResultMap" type="com.eatory.mvc.model.dto.UserProfile">
-    	<result property="userId" column="userId" />
-	    <result property="username" column="username" />
-	    <result property="email" column="email" />
-	    <result property="profileImage" column="profileImage" />
-	    <result property="height" column="height" />
-	    <result property="weight" column="weight" />
-	    <result property="postCount" column="postCount" />
-	    <result property="followerCount" column="followerCount" />
-	    <result property="followeeCount" column="followeeCount" />
-	    <collection property="allergies" ofType="string" javaType="java.util.ArrayList">
-	        <result column="allergies" />
-	    </collection>
-	</resultMap>
+    <result property="userId" column="userId" />
+    <result property="username" column="username" />
+    <result property="email" column="email" />
+    <result property="profileImage" column="profileImage" />
+    <result property="height" column="height" />
+    <result property="weight" column="weight" />
+    <result property="postCount" column="postCount" />
+    <result property="followerCount" column="followerCount" />
+    <result property="followeeCount" column="followeeCount" />
+    <collection property="allergies" ofType="com.eatory.mvc.model.dto.Allergy">
+        <result property="allergyId" column="allergyId" />
+        <result property="allergyName" column="allergyName" />
+    </collection>
+</resultMap>
+
+	
 
 
 	<!-- 회원 목록 가져오기 -->

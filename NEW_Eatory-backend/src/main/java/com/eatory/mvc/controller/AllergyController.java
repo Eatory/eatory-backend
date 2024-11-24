@@ -75,7 +75,7 @@ public class AllergyController {
 	public ResponseEntity<String> deleteUserAllergy(@PathVariable Long userId, @PathVariable Long allergyId) {
 		boolean success = allergyService.deleteUserAllergy(userId, allergyId);
 		if(success) {
-			return ResponseEntity.status(HttpStatus.CREATED).body("사용자 알러지 삭제 성공!");
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("사용자 알러지 삭제 성공!");
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 알러지 삭제 실패!");
 	} 

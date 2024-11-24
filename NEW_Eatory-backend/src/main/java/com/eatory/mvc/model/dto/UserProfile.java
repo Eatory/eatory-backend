@@ -11,7 +11,7 @@ public class UserProfile {
 	private int postCount;
 	private int followerCount;
 	private int followeeCount;
-	private List<String> allergies = new ArrayList<>();
+	private List<Allergy> allergies = new ArrayList<>();
 	private int height;
 	private int weight;
 	
@@ -57,10 +57,10 @@ public class UserProfile {
 	public void setFolloweeCount(int followeeCount) {
 		this.followeeCount = followeeCount;
 	}
-	public List<String> getAllergies() {
+	public List<Allergy> getAllergies() {
 		return allergies;
 	}
-	public void setAllergies(List<String> allergies) {
+	public void setAllergies(List<Allergy> allergies) {
 		this.allergies = allergies;
 	}
 	public int getHeight() {
