@@ -1,15 +1,17 @@
 package com.eatory.mvc.model.dto;
 
-import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class DietRecord {
     private Long recordId;
     private Long userId;
-    private Date recordDate;
-    private String mealType; // 아침, 점심, 저녁, 간식
-    private List<String> menus; // JSON 문자열 대신 List<String>으로 메뉴를 관리
-    private String notes; // 간단한 메모
+    @JsonFormat(pattern = "yyyy-MM-dd") // 응답시 yyyy-MM-dd 형태로 변환
+    private String recordDate; // 변경: Date → String
+    private String mealType;
+    private List<String> menus;
+    private String notes;
 
     // Getter와 Setter
     public Long getRecordId() {
@@ -28,11 +30,11 @@ public class DietRecord {
         this.userId = userId;
     }
 
-    public Date getRecordDate() {
+    public String getRecordDate() {
         return recordDate;
     }
 
-    public void setRecordDate(Date recordDate) {
+    public void setRecordDate(String recordDate) {
         this.recordDate = recordDate;
     }
 
@@ -58,5 +60,17 @@ public class DietRecord {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+    
+    @Override
+    public String toString() {
+        return "DietRecord{" +
+                "recordId=" + recordId +
+                ", userId=" + userId +
+                ", recordDate=" + recordDate +
+                ", mealType='" + mealType + '\'' +
+                ", menus=" + menus +
+                ", notes='" + notes + '\'' +
+                '}';
     }
 }

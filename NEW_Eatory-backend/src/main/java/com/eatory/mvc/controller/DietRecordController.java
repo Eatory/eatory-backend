@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/dietRecord")
+@RequestMapping("/api-record")
 @Tag(name = "DietRecord API", description = "DietRecord CRUD API")
 @CrossOrigin("*")
 public class DietRecordController {
@@ -31,6 +31,7 @@ public class DietRecordController {
     @Operation(summary = "기록 조회", description = "특정 사용자에 속한 모든 기록을 조회합니다.")
     public ResponseEntity<List<DietRecord>> getRecordsByUserId(@PathVariable Long userId) {
         List<DietRecord> records = dietRecordService.getRecordsByUserId(userId);
+        System.out.println("조회된 기록: " + records);
         return records.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(records);
     }
 
