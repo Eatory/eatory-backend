@@ -90,81 +90,74 @@ public class GoogleClientServiceImpl implements GoogleClientService {
 	
 	
 	//소셜 로그인 
-		@Override
-		@Transactional
-		public Map<String, Object> socialLogin(SocialLoginRequest socialLoginRequest) {
-		    Map<String, Object> response = new HashMap<>();
+	@Override
+	@Transactional
+	public Map<String, Object> socialLogin(SocialLoginRequest socialLoginRequest) {
+	    Map<String, Object> response = new HashMap<>();
 
-		    // 소셜 로그인 데이터 가져오기
-		    String email = socialLoginRequest.getEmail();
-		    String platformUserId = socialLoginRequest.getPlatformUserId();
-		    String platformType = socialLoginRequest.getPlatformType();
+	    // 소셜 로그인 데이터 가져오기
+	    String email = socialLoginRequest.getEmail();
+	    String platformType = socialLoginRequest.getPlatformType();
 
-		    // 사용자 확인
-		    User user = userDao.findUserByEmail(email);
-		    if (user == null) {
-		        // 신규 사용자 등록
-		        user = new User();
-		        user.setEmail(email);
-		        user.setUsername(socialLoginRequest.getPlatformType() + "User"); // 기본 이름 설정
-		        user.setPassword(null); // 소셜 로그인은 비밀번호 없음
-		        userDao.insertUser(user);
+	    // 1. 사용자 확인
+	    User existingUser = userDao.findUserByEmail(email);
+	    if (existingUser != null) {
+	        return Map.of(
+	            "message", "이미 가입된 사용자입니다.",
+	            "user", existingUser
+	        );
+	    }
 
-		        // 추가 프로필 정보 저장
-		        User userProfile = new User();
-		        userProfile.setUserId(user.getUserId());
-		        userProfile.setUsername(user.getUsername());
-		        userProfile.setEmail(email);
-		        userProfile.setPhoneNumber(socialLoginRequest.getPhoneNumber());
-		        userProfile.setHeight(socialLoginRequest.getHeight());
-		        userProfile.setWeight(socialLoginRequest.getWeight());
-		        userProfile.setGender(socialLoginRequest.getGender());
-		        userProfile.setBirthDate(socialLoginRequest.getBirthDate());
-		        userDao.insertUser(userProfile);
-		    }
+	    // 2. 신규 사용자 등록
+	    User newUser = new User();
+	    newUser.setEmail(email);
+	    newUser.setUsername(platformType + "User"); // 기본 이름 설정
+	    newUser.setPassword(null); // 소셜 로그인은 비밀번호 없음
 
-		    // AccessToken 및 RefreshToken 생성
-		    String accessToken = jwtUtil.createAccessToken(email);
-		    String refreshToken = jwtUtil.createRefreshToken(email);
-		    Date expiresAt = new Date(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpireTime());
+	    // 추가 프로필 정보 설정 (null 처리 포함)
+	    String birthDate = socialLoginRequest.getBirthDate();
+	    if (birthDate == null || birthDate.equals("0000-00-00") || birthDate.trim().isEmpty()) {
+	        birthDate = null; // 기본값으로 NULL 처리
+	    }
+	    newUser.setBirthDate(birthDate);
+	    newUser.setPhoneNumber(socialLoginRequest.getPhoneNumber() != null ? socialLoginRequest.getPhoneNumber() : "");
+	    newUser.setHeight(socialLoginRequest.getHeight() != null ? socialLoginRequest.getHeight() : 0L);
+	    newUser.setWeight(socialLoginRequest.getWeight() != null ? socialLoginRequest.getWeight() : 0L);
+	    newUser.setGender(socialLoginRequest.getGender() != null ? socialLoginRequest.getGender() : "Unknown");
 
-		    // Refresh Token 저장
-		    userDao.saveRefreshToken(email, refreshToken, expiresAt);
+	    userDao.insertUser(newUser);
 
-		    // 사용자 프로필 가져오기
-		    UserProfile userProfile = userDao.findUserProfile(user.getUserId());
-		    if (userProfile == null) {
-		        userProfile = new UserProfile(); // 기본 프로필
-		        userProfile.setUserId(user.getUserId());
-		        userProfile.setUsername(user.getUsername());
-		        userProfile.setEmail(user.getEmail());
-		        userProfile.setProfileImage("");
-		        userProfile.setPostCount(0);
-		        userProfile.setFollowerCount(0);
-		        userProfile.setFolloweeCount(0);
-		        userProfile.setAllergies(List.of());
-		        userProfile.setHeight(0); 
-		        userProfile.setWeight(0);
-		    }
+	    // 3. AccessToken 및 RefreshToken 생성
+	    String accessToken = jwtUtil.createAccessToken(email);
+	    String refreshToken = jwtUtil.createRefreshToken(email);
+	    Date expiresAt = new Date(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpireTime());
+	    userDao.saveRefreshToken(email, refreshToken, expiresAt);
 
-		    // 응답 데이터 구성
-		    response.put("message", "Social Login 성공");
-		    response.put("access-token", accessToken);
-		    response.put("refresh-token", refreshToken);
-		    response.put("user",
-		            Map.of("userId", user.getUserId(),
-		                    "username", user.getUsername(),
-		                    "email", user.getEmail(),
-		                    "profileImage", userProfile.getProfileImage(),
-		                    "postCount", userProfile.getPostCount(),
-		                    "followerCount", userProfile.getFollowerCount(),
-		                    "followeeCount", userProfile.getFolloweeCount(),
-		                    "allergies", userProfile.getAllergies(),
-		                    "height", userProfile.getHeight(),
-		                    "weight", userProfile.getWeight()));
+	    // 4. 사용자 프로필 가져오기
+	    UserProfile userProfile = userDao.findUserProfile(newUser.getUserId());
+	    if (userProfile == null) {
+	        userProfile = new UserProfile(); // 기본 프로필
+	        userProfile.setUserId(newUser.getUserId());
+	        userProfile.setUsername(newUser.getUsername());
+	        userProfile.setEmail(newUser.getEmail());
+	        userProfile.setProfileImage("");
+	        userProfile.setPostCount(0);
+	        userProfile.setFollowerCount(0);
+	        userProfile.setFolloweeCount(0);
+	        userProfile.setAllergies(List.of());
+	        userProfile.setHeight(0); 
+	        userProfile.setWeight(0);
+	    }
 
-		    return response;
-		}
+	    // 5. 응답 데이터 구성
+	    response.put("message", "Social Login 성공");
+	    response.put("access-token", accessToken);
+	    response.put("refresh-token", refreshToken);
+	    response.put("user", userProfile);
+
+	    return response;
+	}
+
 
 	//플랫폼 userID 추출
 	@Override

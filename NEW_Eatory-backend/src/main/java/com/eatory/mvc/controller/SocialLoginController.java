@@ -59,7 +59,7 @@ public class SocialLoginController {
         }
     }
 	
-	@PostMapping("/oauth2/code/google")
+	@GetMapping("/oauth2/code/google")
 	public ResponseEntity<String> handleGoogleLogin(@RequestParam("code") String code) {
 	    try {
 	        // 1. Authorization Code로 Access Token 요청
