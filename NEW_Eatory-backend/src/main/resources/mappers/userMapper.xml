@@ -51,19 +51,14 @@
 	</select>
 
 	<!-- 회원가입(회원등록) -->
-	<insert id="insertUser" parameterType="User"
-		useGeneratedKeys="true" keyProperty="userId">
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
 		INSERT INTO `User`
-		(username, password, email, height, weight, gender, birth_date,
-		profile_image, phone_number)
-		VALUES
-		(#{username}, #{password}, #{email}, #{height}, #{weight},
-		#{gender}, #{birthDate}, #{profileImage}, #{phoneNumber});
+		(username, password, email, height, weight, gender, birth_date, profile_image, phone_number)
+		VALUES (#{username}, #{password}, #{email}, #{height}, #{weight}, #{gender}, #{birthDate}, #{profileImage}, #{phoneNumber});
 	</insert>
 
 	<!-- 로그인 (사용자 조회) -->
-	<select id="findUserByEmailAndPassword" parameterType="map"
-		resultType="User">
+	<select id="findUserByEmailAndPassword" parameterType="map" resultType="User">
 		SELECT user_id, email, username, password
 		FROM `User`
 		WHERE email = #{email} AND password = #{password};
@@ -91,6 +86,20 @@
 		DELETE FROM refresh_tokens
 		WHERE user_email = #{email};
 	</delete>
+	
+	<!-- email로 userId 가져오기 -->
+	<select id="findUserIdByEmail" parameterType="string" resultType="long">
+	    SELECT user_id
+	    FROM `User`
+	    WHERE email = #{email};
+	</select>
+	
+	<!-- 이메일로 소셜 로그인(user) 정보 조회 -->
+    <select id="findUserByEmail" parameterType="string" resultType="com.eatory.mvc.model.dto.User">
+        SELECT * FROM SocialLogin WHERE email = #{email};
+    </select>
+	
 
+	
 
 </mapper>

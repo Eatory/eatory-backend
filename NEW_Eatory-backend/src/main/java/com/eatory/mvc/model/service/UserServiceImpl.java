@@ -35,16 +35,24 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUserList() {
 		return userDao.selectAll();
 	}
+	
+	@Override
+	@Transactional
+	public Long findUserId(String email) {
+		return userDao.findUserIdByEmail(email);
+	}
+	
 
 	@Override
 	@Transactional
 	// 사용자 등록하기 (회원가입)
 	public boolean signup(User user) {
 		try {
-			userDao.insertOne(user);
+			userDao.insertUser(user);
+			System.out.println("Generated User ID: " + user.getUserId());
 			return true;
 		} catch (Exception e) {
-			// 필요한 경우 예외를 로깅하거나 처리
+			e.printStackTrace(); 
 			return false;
 		}
 
@@ -54,7 +62,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	// 로그인 하기
 	public User login(String email, String password) {
-		return userDao.selectOne(email, password);
+		return userDao.selectUser(email, password);
 	}
 
 	@Override
@@ -147,6 +155,11 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@Override
+	public User findUserByEmail(String email) {
+		return userDao.findUserByEmail(email);
 	}
 
 }
