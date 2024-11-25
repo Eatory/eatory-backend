@@ -14,6 +14,7 @@ public class UserProfile {
 	private List<Allergy> allergies = new ArrayList<>();
 	private int height;
 	private int weight;
+	private int phoneNumber;
 	
 	public Long getUserId() {
 		return userId;
@@ -75,6 +76,14 @@ public class UserProfile {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
+	public int getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
+	
 	
 	
 	

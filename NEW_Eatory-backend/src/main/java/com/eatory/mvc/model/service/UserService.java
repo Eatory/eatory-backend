@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.eatory.mvc.model.dto.LoginRequest;
+import com.eatory.mvc.model.dto.SocialLoginRequest;
 import com.eatory.mvc.model.dto.User;
 import com.eatory.mvc.model.dto.UserProfile;
 
@@ -35,6 +36,7 @@ public interface UserService {
 	public Long findUserId(String email);
 	
 	public User findUserByEmail(String email);
+
 
 
 	

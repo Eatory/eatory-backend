@@ -13,6 +13,7 @@ import com.eatory.mvc.jwt.JwtUtil;
 import com.eatory.mvc.model.dao.AllergyDao;
 import com.eatory.mvc.model.dao.UserDao;
 import com.eatory.mvc.model.dto.LoginRequest;
+import com.eatory.mvc.model.dto.SocialLoginRequest;
 import com.eatory.mvc.model.dto.User;
 import com.eatory.mvc.model.dto.UserProfile;
 
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public Long findUserId(String email) {
+	public Long findUserId(String email) { 
 		return userDao.findUserIdByEmail(email);
 	}
 	
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 
-	}
+	} 
 
 	@Override
 	@Transactional
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
 		Map<String, Object> response = new HashMap<>();
 		String email = loginRequest.getEmail();
 		String password = loginRequest.getPassword();
-
+		
 		// 사용자 인증
 		User user = userDao.findUserByEmailAndPassword(email, password);
 		if (user != null) {
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService {
 				userProfile.setFollowerCount(0);
 				userProfile.setFolloweeCount(0);
 				userProfile.setAllergies(List.of());
-				userProfile.setHeight(0);
+				userProfile.setHeight( 0);
 				userProfile.setWeight(0);
 			}
 
@@ -130,6 +131,7 @@ public class UserServiceImpl implements UserService {
 
 		return response;
 	}
+
 
 	@Override
 	@Transactional
