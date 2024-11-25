@@ -95,8 +95,8 @@
 	</select>
 	
 	<!-- 이메일로 소셜 로그인(user) 정보 조회 -->
-    <select id="findUserByEmail" parameterType="string" resultType="com.eatory.mvc.model.dto.User">
-        SELECT * FROM SocialLogin WHERE email = #{email};
+    <select id="findUserByEmail" resultType="com.eatory.mvc.model.dto.User">
+        SELECT * FROM `User` WHERE email = #{email};
     </select>
 	
 

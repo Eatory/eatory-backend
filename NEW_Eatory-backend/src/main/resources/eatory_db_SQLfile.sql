@@ -14,8 +14,8 @@ CREATE TABLE `User` (
     `email` VARCHAR(255) UNIQUE NOT NULL, -- 이메일로 소셜 사용자 구분
     `height` BIGINT NULL,
     `weight` BIGINT NULL,
-    `gender` CHAR(1) NULL,
-    `birth_date` DATE NULL,
+    `gender` VARCHAR(50) NULL,
+    `birth_date` DATE DEFAULT NULL,
     `profile_image` VARCHAR(255) NULL,
     `phone_number` VARCHAR(255) NULL,
     PRIMARY KEY (`user_id`)
@@ -188,3 +188,4 @@ VALUES
 
 
 
+ 

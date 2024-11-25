@@ -30,7 +30,7 @@ public interface UserDao {
 	
 	public Long findUserIdByEmail(@Param("email") String email);
 
-	public User findUserByEmail(@Param("email") String email);
+	public User findUserByEmail(String email);
 	
 
 }

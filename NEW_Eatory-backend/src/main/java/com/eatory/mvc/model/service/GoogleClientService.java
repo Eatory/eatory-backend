@@ -2,6 +2,8 @@ package com.eatory.mvc.model.service;
 
 import java.util.Map;
 
+import com.eatory.mvc.model.dto.SocialLoginRequest;
+
 public interface GoogleClientService {
 	/**
      * Google OAuth2 Access Token을 요청합니다.
@@ -16,4 +18,7 @@ public interface GoogleClientService {
 
 	
 	Map<String, Object> getGoogleUserInfo(String accessToken);
+
+
+	Map<String, Object> socialLogin(SocialLoginRequest socialLoginRequest);
 }
