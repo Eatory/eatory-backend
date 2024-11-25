@@ -31,6 +31,10 @@ public interface UserService {
 	public String refreshAccessToken(String email, String refreshToken);
 
 	public boolean logoutUser(String email);
+	
+	public Long findUserId(String email);
+	
+	public User findUserByEmail(String email);
 
 
 	

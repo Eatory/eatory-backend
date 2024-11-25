@@ -13,9 +13,9 @@ public interface UserDao {
 
 	public List<User> selectAll();
 
-	public void insertOne(User user);
+	public void insertUser(User user);
 
-	User selectOne(@Param("email") String email, @Param("password") String password);
+	User selectUser(@Param("email") String email, @Param("password") String password);
 	
 	//프로필 정보 가져오기
 	public UserProfile findUserProfile(@Param("userId") Long userId);
@@ -27,5 +27,10 @@ public interface UserDao {
 	public void saveRefreshToken(String email, String refreshToken, Date expiresAt);
 
 	public void deleteRefreshTokenByEmail(String email);
+	
+	public Long findUserIdByEmail(@Param("email") String email);
+
+	public User findUserByEmail(@Param("email") String email);
+	
 
 }

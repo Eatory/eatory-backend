@@ -1,11 +1,24 @@
 package com.eatory.mvc.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class GoogleAccessTokenResponse {
-	private String accessToken; //구글 액세스 토큰 
-	private String expiresIn; //구글 액세스 토큰의 만료 시간 (초 단위) 
-	private String scope; //조회하고자 하는 사용자의 정보 
-	private String tokenType; //토큰 유형. Bearer로 고정 
-	private String idToken; //구글 리프레시 토큰 
+	@JsonProperty("access_token")
+    private String accessToken; // 구글 액세스 토큰 
+
+    @JsonProperty("expires_in")
+    private String expiresIn; // 토큰의 만료 시간 
+
+    @JsonProperty("scope")
+    private String scope; // 조회하고자 하는 사용자 정보 
+
+    @JsonProperty("token_type")
+    private String tokenType; // 토큰 유형 (Bearer로 고정)
+
+    @JsonProperty("id_token")
+    private String idToken; // 구글 ID 토큰
+
+	
 	public String getAccessToken() {
 		return accessToken;
 	}
@@ -35,6 +48,11 @@ public class GoogleAccessTokenResponse {
 	}
 	public void setIdToken(String idToken) {
 		this.idToken = idToken;
+	}
+	@Override
+	public String toString() {
+		return "GoogleAccessTokenResponse [accessToken=" + accessToken + ", expiresIn=" + expiresIn + ", scope=" + scope
+				+ ", tokenType=" + tokenType + ", idToken=" + idToken + "]";
 	}
 	
 	

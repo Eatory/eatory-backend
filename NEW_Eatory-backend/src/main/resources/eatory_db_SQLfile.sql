@@ -9,9 +9,9 @@ USE eatory_db;
 
 CREATE TABLE `User` (
     `user_id` BIGINT NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(255) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) UNIQUE NOT NULL,
+    `username` VARCHAR(255) NULL, -- 소셜 회원가입 초기에는 NULL 가능
+    `password` VARCHAR(255) NULL, -- 로컬 로그인 사용자만 사용 (소셜 회원은 NULL)
+    `email` VARCHAR(255) UNIQUE NOT NULL, -- 이메일로 소셜 사용자 구분
     `height` BIGINT NULL,
     `weight` BIGINT NULL,
     `gender` CHAR(1) NULL,
@@ -20,6 +20,23 @@ CREATE TABLE `User` (
     `phone_number` VARCHAR(255) NULL,
     PRIMARY KEY (`user_id`)
 );
+
+CREATE TABLE `SocialLogin` (
+    `social_id` BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL,
+    `platform_user_id` VARCHAR(255) UNIQUE NULL,
+    `platform_type` VARCHAR(255) NOT NULL,
+    `access_token` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`social_id`),
+    UNIQUE KEY `uq_platform_type_user_id` (`platform_type`, `user_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `User` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+
+
+
 
 CREATE TABLE Allergy (
     allergy_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

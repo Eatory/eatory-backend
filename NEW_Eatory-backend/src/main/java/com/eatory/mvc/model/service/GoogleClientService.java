@@ -1,5 +1,7 @@
 package com.eatory.mvc.model.service;
 
+import java.util.Map;
+
 public interface GoogleClientService {
 	/**
      * Google OAuth2 Access Token을 요청합니다.
@@ -11,4 +13,7 @@ public interface GoogleClientService {
      * @return Access Token 문자열
      */
     String getAccessToken(String code, String clientId, String clientSecret, String redirectUri);
+
+	
+	Map<String, Object> getGoogleUserInfo(String accessToken);
 }
