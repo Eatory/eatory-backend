@@ -7,15 +7,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.eatory.mvc.jwt.JwtUtil;
 import com.eatory.mvc.model.dao.UserDao;
@@ -41,14 +46,15 @@ public class SocialLoginController {
 	private final GoogleProperties googleProperties;
 	private final SocialLoginService socialLoginService;
 	private final UserService userService;
-
+	private final JwtUtil jwtUtil;
 
 	public SocialLoginController(GoogleClientService googleService, GoogleProperties googleProperties,
-			SocialLoginService socialLoginService, UserService userService) {
+			SocialLoginService socialLoginService, UserService userService, JwtUtil jwtUtil) {
 		this.googleService = googleService;
 		this.googleProperties = googleProperties;
 		this.socialLoginService = socialLoginService;
 		this.userService = userService;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@PostMapping("/google") //로그인 시도 - 회원이 아니면 회원가입 시도 
@@ -61,48 +67,49 @@ public class SocialLoginController {
         }
     }
 	
-	@GetMapping("/oauth2/code/google")
-	public void handleGoogleLogin(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
+	@GetMapping("/oauth2/code/google") //구글에서 받은 Authoriazation Code를 프론트엔드로 리디렉션 
+	public ResponseEntity<?> handleGoogleLogin(@RequestParam("code") String code) {
 	    try {
 	        // 1. 구글에서 Authorization Code로 Access Token 요청
 	        String accessToken = googleService.getAccessToken(code, googleProperties.getClientId(),
 	            googleProperties.getClientSecret(), googleProperties.getRedirectUri());
 	        
-	        // 2. Access Token으로 사용자 정보 요청
-	        Map<String, Object> userInfo = googleService.getGoogleUserInfo(accessToken);
-
-	        // 3. 사용자 데이터 처리
-	        SocialLoginRequest socialLoginRequest = new SocialLoginRequest();
-	        socialLoginRequest.setEmail((String) userInfo.get("email"));
-	        socialLoginRequest.setPlatformUserId((String) userInfo.get("sub"));
-	        socialLoginRequest.setPlatformType("Google");
-	        socialLoginRequest.setAccessToken(accessToken);
-
-	        Map<String, Object> loginResponse = googleService.socialLogin(socialLoginRequest);
-
-	        // 4. JWT 토큰 세션에 저장
-	        String jwtToken = (String) loginResponse.get("access-token");
-	        response.addHeader("Authorization", "Bearer " + jwtToken);
-
-	        // 5. `state` 값에 따라 리다이렉션
-	        if ("calendar".equals(state)) {
-	            // 기존 사용자 → 캘린더로 리다이렉트
-	            response.sendRedirect("http://localhost:5173/calendar");
-	        } else if ("member-name".equals(state)) {
-	            // 신규 사용자 → 이름 입력 화면으로 리다이렉트
-	            response.sendRedirect("http://localhost:5173/signup/member-name");
-	        } else {
-	            // 기본값 (에러 처리 또는 홈으로 이동)
-	            response.sendRedirect("http://localhost:5173/");
-	        }
+	       // 2. Authorization Code를 프론트엔드로 리디렉션
+	        return ResponseEntity.ok(Map.of("access-token", accessToken));
 	    } catch (Exception e) {
-	        try {
-	            response.sendRedirect("http://localhost:5173/error?message=" + e.getMessage());
-	        } catch (IOException ioException) {
-	            ioException.printStackTrace();
-	        }
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("accessToken 반환에 실패!");
 	    }
 	}
+	
+	@GetMapping("/user-info")
+	public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+        try {
+        	 // Google Access Token으로 사용자 정보 요청
+            String accessToken = token.substring(7); // "Bearer " 제거
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Google API에 요청
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(
+                "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+                HttpMethod.GET,
+                entity,
+                Map.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                Map userInfo = response.getBody();
+                return ResponseEntity.ok(userInfo); // 사용자 정보를 반환
+            } else {
+                return ResponseEntity.status(response.getStatusCode()).body("Failed to fetch user info from Google");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired Google Access Token");
+        }
+    }
 
 
 
