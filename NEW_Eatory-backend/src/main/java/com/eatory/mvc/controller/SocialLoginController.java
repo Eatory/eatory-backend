@@ -1,5 +1,6 @@
 package com.eatory.mvc.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.eatory.mvc.model.service.SocialLoginService;
 import com.eatory.mvc.model.service.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/login")
@@ -60,40 +62,50 @@ public class SocialLoginController {
     }
 	
 	@GetMapping("/oauth2/code/google")
-	public ResponseEntity<String> handleGoogleLogin(@RequestParam("code") String code) {
+	public void handleGoogleLogin(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
 	    try {
-	        // 1. Authorization Code로 Access Token 요청
+	        // 1. 구글에서 Authorization Code로 Access Token 요청
 	        String accessToken = googleService.getAccessToken(code, googleProperties.getClientId(),
 	            googleProperties.getClientSecret(), googleProperties.getRedirectUri());
 	        
 	        // 2. Access Token으로 사용자 정보 요청
 	        Map<String, Object> userInfo = googleService.getGoogleUserInfo(accessToken);
-	        
-	     // Step 3: 사용자 데이터 확인 및 처리
-	        String email = (String) userInfo.get("email");
-	        String platformUserId = (String) userInfo.get("sub");
 
-	        if (email == null || platformUserId == null) {
-	            throw new RuntimeException("Google 사용자 정보에서 email 또는 platformUserId를 찾을 수 없습니다.");
-	        }
-
-	        // Step 4: SocialLoginRequest 생성 및 서비스 호출
+	        // 3. 사용자 데이터 처리
 	        SocialLoginRequest socialLoginRequest = new SocialLoginRequest();
-	        socialLoginRequest.setEmail(email);
-	        socialLoginRequest.setPlatformUserId(platformUserId);
+	        socialLoginRequest.setEmail((String) userInfo.get("email"));
+	        socialLoginRequest.setPlatformUserId((String) userInfo.get("sub"));
 	        socialLoginRequest.setPlatformType("Google");
 	        socialLoginRequest.setAccessToken(accessToken);
 
-	        // 서비스 계층에서 처리 (회원가입 또는 로그인)
-	        Map<String, Object> response = googleService.socialLogin(socialLoginRequest);
+	        Map<String, Object> loginResponse = googleService.socialLogin(socialLoginRequest);
 
+	        // 4. JWT 토큰 세션에 저장
+	        String jwtToken = (String) loginResponse.get("access-token");
+	        response.addHeader("Authorization", "Bearer " + jwtToken);
 
-	        return ResponseEntity.ok("로그인 성공");
+	        // 5. `state` 값에 따라 리다이렉션
+	        if ("calendar".equals(state)) {
+	            // 기존 사용자 → 캘린더로 리다이렉트
+	            response.sendRedirect("http://localhost:5173/calendar");
+	        } else if ("member-name".equals(state)) {
+	            // 신규 사용자 → 이름 입력 화면으로 리다이렉트
+	            response.sendRedirect("http://localhost:5173/signup/member-name");
+	        } else {
+	            // 기본값 (에러 처리 또는 홈으로 이동)
+	            response.sendRedirect("http://localhost:5173/");
+	        }
 	    } catch (Exception e) {
-	    	e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: " + e.getMessage());
+	        try {
+	            response.sendRedirect("http://localhost:5173/error?message=" + e.getMessage());
+	        } catch (IOException ioException) {
+	            ioException.printStackTrace();
+	        }
 	    }
-	} 
+	}
+
+
+
 
 
 }

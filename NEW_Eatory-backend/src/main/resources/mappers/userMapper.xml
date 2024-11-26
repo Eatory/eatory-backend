@@ -98,6 +98,14 @@
     <select id="findUserByEmail" resultType="com.eatory.mvc.model.dto.User">
         SELECT * FROM `User` WHERE email = #{email};
     </select>
+    
+    
+    <update id="updateUsername">
+        UPDATE `User`
+        SET username = #{username}
+        WHERE user_id = #{userId};
+    </update>
+	
 	
 
 	
