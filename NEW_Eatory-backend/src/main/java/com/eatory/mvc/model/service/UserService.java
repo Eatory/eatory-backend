@@ -37,6 +37,8 @@ public interface UserService {
 	
 	public User findUserByEmail(String email);
 
+	public boolean updateUsername(Long userId, String username);
+
 
 
 	

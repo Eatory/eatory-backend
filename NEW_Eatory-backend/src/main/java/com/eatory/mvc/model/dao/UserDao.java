@@ -13,7 +13,7 @@ public interface UserDao {
 
 	public List<User> selectAll();
 
-	public void insertUser(User user);
+	public void insertUser(User user); 
 
 	User selectUser(@Param("email") String email, @Param("password") String password);
 	
@@ -31,6 +31,8 @@ public interface UserDao {
 	public Long findUserIdByEmail(@Param("email") String email);
 
 	public User findUserByEmail(String email);
+
+	public int updateUsername(@Param("userId") Long userId, @Param("username") String username);
 	
 
 }

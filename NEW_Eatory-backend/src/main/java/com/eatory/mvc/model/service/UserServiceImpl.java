@@ -160,8 +160,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public User findUserByEmail(String email) {
 		return userDao.findUserByEmail(email);
 	}
+
+	@Override
+	@Transactional
+	public boolean updateUsername(Long userId, String username) {
+		try {
+            int rowsAffected = userDao.updateUsername(userId, username);
+            return rowsAffected > 0; // 업데이트 성공 여부 확인
+        } catch (Exception e) {
+            throw new RuntimeException("Username 업데이트 중 오류 발생: " + e.getMessage(), e);
+        }
+	}
+
+	
 
 }
