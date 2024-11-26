@@ -175,8 +175,22 @@ VALUES
 (7, '2024-11-26', '저녁', '["탕수육", "짜장면"]', '중국 요리 저녁');
 
 
+CREATE TABLE Post (
+    post_id BIGINT NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    post_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    image TEXT NULL,
+    content TEXT NULL,
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
 
-
+INSERT INTO Post (user_id, image, content) VALUES
+(1, 'image1.jpg', '오늘 저녁은 트러플 관자 파스타!!! 미미. 미미. '),
+(2, 'image2.jpg', '고르곤졸라 피자 같죠?? 사실 감자전이랍니다~'),
+(1, 'image3.jpg', '채소를 곁들인 인도네시아 고기 꼬치. 굽기가 이븐했어요'),
+(3, 'image4.jpg', '이 부위의 이름 뭐게~ 힌트: 곱창 친구임!!'),
+(2, 'image5.jpg', '오징어 먹물은 왜 까말까.....? 알 수가 없다.');
 
 
 
